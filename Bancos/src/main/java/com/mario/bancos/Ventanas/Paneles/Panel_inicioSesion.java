@@ -4,7 +4,12 @@
  */
 package com.mario.bancos.Ventanas.Paneles;
 
+import com.mario.bancos.Clases.Hash;
+import com.mario.bancos.Clases.Usuario;
+import com.mario.bancos.Cliente;
+
 import java.awt.BorderLayout;
+import java.security.NoSuchAlgorithmException;
 
 /**
  *
@@ -48,7 +53,11 @@ public class Panel_inicioSesion extends javax.swing.JPanel {
         b_inicioSesion.setText("Entrar");
         b_inicioSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_inicioSesionActionPerformed(evt);
+                try {
+                    b_inicioSesionActionPerformed(evt);
+                } catch (NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -95,8 +104,22 @@ public class Panel_inicioSesion extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void b_inicioSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_inicioSesionActionPerformed
-        // TODO add your handling code here:
+    private void b_inicioSesionActionPerformed(java.awt.event.ActionEvent evt) throws NoSuchAlgorithmException {//GEN-FIRST:event_b_inicioSesionActionPerformed
+
+        String usuario = t_usuario.getText();
+        String pass = t_pass.getText();
+
+        if(!usuario.isEmpty() && !pass.isEmpty()){
+            Usuario u = new Usuario();
+            u.setUsuario(usuario);
+
+            Hash md = new Hash();
+            pass = md.hashear(t_pass.getText());
+            u.setContrasena(pass);
+            u.setMetodo("loginUsuario");
+            Cliente.login(u);
+        }
+
     }//GEN-LAST:event_b_inicioSesionActionPerformed
 
 

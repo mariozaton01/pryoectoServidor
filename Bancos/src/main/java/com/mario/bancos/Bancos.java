@@ -6,18 +6,23 @@
 package com.mario.bancos;
 import com.mario.bancos.Ventanas.*;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 /**
  *
  * @author MarioZatonToledo
  */
 public class Bancos {
     private static Ventana_login v_login;
+    private static ObjectOutputStream output;
+    private static ObjectInputStream input;
 
-    public static void main(String[] args) {
-        setInicio();
-    }
     
-    public static void setInicio(){
+    public static void setInicio(ObjectOutputStream out, ObjectInputStream in){
+        output = out;
+        input = in;
+
         v_login = new Ventana_login();
         v_login.setVisible(true);
         v_login.setLocationRelativeTo(null);

@@ -4,6 +4,16 @@
  */
 package com.mario.bancos.Ventanas.Paneles;
 
+import com.mario.bancos.Clases.Usuario;
+import com.mario.bancos.Clases.Hash;
+import com.mario.bancos.Cliente;
+
+import javax.swing.*;
+import java.awt.*;
+import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  *
  * @author MarioZatonToledo
@@ -28,17 +38,17 @@ public class Panel_registro extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        t_nombre = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        t_apellido = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        n_edad = new javax.swing.JSpinner();
         jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        t_email = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        t_usuario = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        t_pass = new javax.swing.JTextField();
         b_registro = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(622, 481));
@@ -58,13 +68,15 @@ public class Panel_registro extends javax.swing.JPanel {
 
         jLabel7.setText("Contraseña:");
 
-        jTextField5.setText("jTextField5");
-
         b_registro.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         b_registro.setText("Registrarse");
         b_registro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_registroActionPerformed(evt);
+                try {
+                    b_registroActionPerformed(evt);
+                } catch (NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -80,9 +92,9 @@ public class Panel_registro extends javax.swing.JPanel {
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(t_nombre)
+                    .addComponent(n_edad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(88, 88, 88)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -91,12 +103,12 @@ public class Panel_registro extends javax.swing.JPanel {
                             .addComponent(jLabel5))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(t_apellido, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_email, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(t_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(87, 87, 87))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,31 +128,157 @@ public class Panel_registro extends javax.swing.JPanel {
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(t_apellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(n_edad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(t_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(t_pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(60, 60, 60)
                 .addComponent(b_registro)
                 .addContainerGap(168, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void b_registroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_registroActionPerformed
-        // TODO add your handling code here:
+    private void b_registroActionPerformed(java.awt.event.ActionEvent evt) throws NoSuchAlgorithmException {//GEN-FIRST:event_b_registroActionPerformed
+
+        int contErrores = 0;
+
+        if(validarNombre(t_nombre.getText())==false){
+            t_nombre.setText(t_nombre.getText()+"*");
+            t_nombre.setForeground(Color.red);
+
+            contErrores ++;
+        }
+        else {
+            t_nombre.setForeground(Color.black);
+        }
+
+        if(validarApellido(t_apellido.getText())==false){
+            t_apellido.setText(t_apellido.getText()+"*");
+            t_apellido.setForeground(Color.red);
+
+            contErrores ++;
+        }
+
+        if(validarEmail(t_email.getText())==false){
+            t_email.setText(t_email.getText()+"*");
+            t_email.setForeground(Color.red);
+
+            contErrores ++;
+        }
+
+        if( validarContrasena(t_pass.getText())==false){
+            t_pass.setText(t_pass.getText()+"*");
+            t_pass.setForeground(Color.red);
+
+            contErrores ++;
+        }
+        if( validarEdad(Integer.parseInt(n_edad.getValue().toString()))==false){
+            t_pass.setText(t_pass.getText()+"*");
+            t_pass.setForeground(Color.red);
+
+            contErrores ++;
+        }
+
+        if(contErrores == 0){
+            String pass = null;
+            try{
+                Hash md5 = new Hash();
+                pass = Hash.hashear(t_pass.getText());
+
+            }
+            catch (Exception e){
+                System.out.println("Error al hashear la contraseña: "+ e.getMessage());
+
+            }
+
+            String password = pass.toString();
+            Usuario u = new Usuario(t_nombre.getText(), t_apellido.getText(), Integer.parseInt(n_edad.getValue().toString()),t_usuario.getText(),password,t_email.getText());
+            u.setMetodo("registroUsuario");
+
+
+            try{
+                String[] buttons = { "Acepto"};
+                int returnValue = JOptionPane.showOptionDialog(null, "A continuacion deberás firmar el acuerdo de uso del banco para crear una cuenta", "Acepto Banco",
+                        JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[0]);
+
+                if(returnValue == 0)
+                    u.setFirmaDigital("acepto");
+
+                Cliente.insertarCliente(u);
+                JOptionPane.showMessageDialog(null, "El alumno ha sido añadido con exito");
+
+            }
+            catch (Exception e){
+                JOptionPane.showMessageDialog(null, "Ha ocurrido un error en la inserción del usuario");
+            }
+        }
     }//GEN-LAST:event_b_registroActionPerformed
 
+
+    private boolean validarNombre(String nombre) {
+
+        Pattern pnombre= Pattern.compile("^[A-Z][a-z]+$");
+        Matcher mnombre= pnombre.matcher(nombre);
+
+        if(mnombre.matches()){
+            return true;
+        }
+        else
+            return false;
+
+    }
+    private boolean validarApellido(String apellido) {
+        Pattern papellido = Pattern.compile("^[A-Z][a-z]+$");
+        Matcher mapellido= papellido.matcher(apellido);
+        
+        if(mapellido.matches()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    private boolean validarContrasena(String apellido) {
+        Pattern pPass = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$");
+        Matcher mPass= pPass.matcher(apellido);
+
+        if(mPass.matches()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    private boolean validarEmail(String email) {
+        Pattern pEmail= Pattern.compile("^[A-z0-9,._-]+@(ikasle.egibide.org|gmail.com)$");
+        Matcher mEmail = pEmail.matcher(email);
+        if(mEmail.matches())
+            return true;
+        else 
+            return false;
+    }
+
+    private boolean validarEdad(int edad) {
+
+        if(edad < 18)
+            return false;
+        else
+            return true;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_registro;
@@ -151,11 +289,11 @@ public class Panel_registro extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JSpinner n_edad;
+    private javax.swing.JTextField t_apellido;
+    private javax.swing.JTextField t_email;
+    private javax.swing.JTextField t_nombre;
+    private javax.swing.JTextField t_pass;
+    private javax.swing.JTextField t_usuario;
     // End of variables declaration//GEN-END:variables
 }
