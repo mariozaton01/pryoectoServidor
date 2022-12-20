@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="webjars.bower.md5" type="repository">
+    <properties maven-id="org.webjars.bower:md5:0.3.0">
+      <exclude>
+        <dependency maven-id="org.webjars.bower:md5" />
+      </exclude>
+    </properties>
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

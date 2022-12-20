@@ -1,22 +1,27 @@
 package com.mario.bancos.Clases;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Movimientos {
+public class Movimientos implements Serializable {
 
     int id;
     int saldoAnterior;
-    int tipoMovimiento;
-    Date fecha;
+    String tipoMovimiento;
+    String fecha;
     int idCliente;
     int cantidad;
 
-    public Movimientos(int saldoAnterior, int tipoMovimiento, Date fecha, int idCliente, int cantidad) {
+    public Movimientos(int saldoAnterior, String tipoMovimiento, String fecha, int idCliente, int cantidad) {
         this.saldoAnterior = saldoAnterior;
         this.tipoMovimiento = tipoMovimiento;
         this.fecha = fecha;
         this.idCliente = idCliente;
         this.cantidad = cantidad;
+    }
+
+    public Movimientos() {
+
     }
 
     public int getId() {
@@ -35,19 +40,19 @@ public class Movimientos {
         this.saldoAnterior = saldoAnterior;
     }
 
-    public int getTipoMovimiento() {
+    public String getTipoMovimiento() {
         return tipoMovimiento;
     }
 
-    public void setTipoMovimiento(int tipoMovimiento) {
+    public void setTipoMovimiento(String tipoMovimiento) {
         this.tipoMovimiento = tipoMovimiento;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
@@ -65,5 +70,17 @@ public class Movimientos {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    @Override
+    public String toString() {
+        return "Movimientos{" +
+                "id=" + id +
+                ", saldoAnterior=" + saldoAnterior +
+                ", tipoMovimiento='" + tipoMovimiento + '\'' +
+                ", fecha=" + fecha +
+                ", idCliente=" + idCliente +
+                ", cantidad=" + cantidad +
+                '}';
     }
 }

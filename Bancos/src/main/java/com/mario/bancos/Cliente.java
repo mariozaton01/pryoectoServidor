@@ -1,8 +1,9 @@
 package com.mario.bancos;
 
+import com.mario.bancos.Clases.Movimientos;
+import com.mario.bancos.Clases.Saldo;
 import com.mario.bancos.Clases.Usuario;
 import com.mario.bancos.FirmasDigitales.FirmaCliente;
-import com.mario.bancos.Ventanas.Paneles.Panel_registro;
 import com.mario.bancos.Ventanas.Ventana_inicio;
 import com.mario.bancos.Ventanas.Ventana_login;
 
@@ -17,8 +18,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.util.Base64;
-import java.util.Scanner;
 
 public class Cliente {
     //Conexion related
@@ -48,7 +47,6 @@ public class Cliente {
             throw new RuntimeException(e);
         }
         System.out.println("Conectado al servidor");
-
 
         //Crear una clave simétrica AES
         KeyGenerator generadorAES = null;
@@ -91,7 +89,6 @@ public class Cliente {
             System.out.println("Error al encriptar la clave simétrica con la clave publica del servidor" + e.getMessage());
             throw new RuntimeException(e);
         }
-
         //Guardar la clave en la variable global
         secretKeyCliente = claveSimetrica;
         //Guardar la clave publica del servidor en la variable global
@@ -107,7 +104,6 @@ public class Cliente {
             throw new RuntimeException(e);
         }
 
-
         //Pruebas de envio y recepcion
         //pruebasEnvioRecepcion(output, input);
 
@@ -115,41 +111,6 @@ public class Cliente {
         setInicio();
     }
 
-    private static void pruebasEnvioRecepcion(ObjectOutputStream output, ObjectInputStream input) {
-        //Enviar un mensaje al servidor
-        String mensaje = "Hola servidor";
-        //Cifrar el mensaje
-        byte[] mensajeCifrado = cifrarObjetoSimetrico(mensaje);
-        //Enviar el mensaje cifrado
-        try {
-            output.writeObject(mensajeCifrado);
-            System.out.println("Enviado el mensaje cifrado al servidor");
-        } catch (Exception e) {
-            System.out.println("Error al enviar el mensaje cifrado al servidor" + e.getMessage());
-            throw new RuntimeException(e);
-        }
-        //Esperar la respuesta del servidor
-        byte[] mensajeRecibido = null;
-        try {
-            mensajeRecibido = (byte[]) input.readObject();
-            System.out.println("Recibido el mensaje cifrado del servidor");
-        } catch (Exception e) {
-            System.out.println("Error al recibir el mensaje cifrado del servidor" + e.getMessage());
-            throw new RuntimeException(e);
-        }
-        //Descifrar el mensaje
-        String mensajeDescifrado = descifrarObjetoSimetrico(mensajeRecibido);
-        //Mostrar el mensaje
-        System.out.println("Mensaje recibido del servidor: " + mensajeDescifrado);
-
-    }
-
-    /**
-     * Cifra un texto con la clave simétrica
-     *
-     * @param
-     * @return byte[]
-     */
     private static byte[] cifrarObjetoSimetrico(Object obj) {
         //Crear el cifrador simétrico con la clave simétrica
         Cipher cifradorSimetrico = null;
@@ -185,12 +146,6 @@ public class Cliente {
         return contenidoCifrado;
     }
 
-    /**
-     * Descifra un texto con la clave simétrica
-     *
-     * @param contenidoCifrado
-     * @return
-     */
     private static String descifrarObjetoSimetrico(byte[] contenidoCifrado) {
         //Crear el cifrador simétrico con la clave simétrica
         Cipher cifradorSimetrico = null;
@@ -212,7 +167,6 @@ public class Cliente {
             throw new RuntimeException(e);
         }
         return new String(contenidoDescifrado);
-
 
     }
     private static String descifrarMensajeSimetrico(byte[] contenidoCifrado) {
@@ -236,11 +190,9 @@ public class Cliente {
             throw new RuntimeException(e);
         }
         return new String(contenidoDescifrado);
-
-
     }
 
-    //Método para enviar un mensaje cifrado al servidor
+    //Método para enviar un Objeto cifrado al servidor
     private static void enviarObjetoCifrado(ObjectOutputStream output, Object mensaje) {
         //Cifrar el mensaje
         byte[] mensajeCifrado = cifrarObjetoSimetrico(mensaje);
@@ -310,7 +262,6 @@ public class Cliente {
         String mensajeDescifrado = new String(mensajeRecibido);
         return mensajeDescifrado;
     }
-
     public static void setInicio(){
 
         v_login = new Ventana_login();
@@ -339,10 +290,7 @@ public class Cliente {
             System.out.println("Error al enviar datos de cliente: "+ e.getMessage());
         }
 
-
-
     }
-
 
     public static void login(Usuario u) {
         try{
@@ -365,6 +313,31 @@ public class Cliente {
         }
         catch (Exception e){
             System.out.println("Error al iniciar sesion: " +e.getMessage());
+        }
+    }
+
+    public static Boolean crearMovimiento(Movimientos m) {
+        enviarObjetoCifrado(output,m);
+        String mensaje = recibirMensaje(input);
+
+        Boolean realiazado = false;
+        if(mensaje.equals("movimientoRealizado")){
+            realiazado = true;
+        }
+
+        return realiazado;
+    }
+    public static void verSaldo(JTextField t_saldo) {
+        Saldo s = new Saldo("verSaldo");
+        enviarObjetoCifrado(output, s);
+        String mensaje = recibirMensajeCifrado(input);
+
+        if(!mensaje.equals("")){
+            t_saldo.setText(mensaje);
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "No se pudo recuperar el saldo");
+
         }
     }
 }

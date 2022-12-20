@@ -4,7 +4,15 @@
  */
 package com.mario.bancos.Ventanas.Paneles;
 
+import com.mario.bancos.Clases.Movimientos;
 import com.mario.bancos.Cliente;
+
+import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
+import java.lang.reflect.Field;
 
 /**
  *
@@ -110,15 +118,31 @@ public class Panel_ingresoRetiro extends javax.swing.JPanel {
         int cantidad = Integer.parseInt(n_cantidad.getValue().toString());
 
         if(cantidad > 0 && cantidad<= 500) {
-            
-            //Cliente.crearMovimiento();
+            Movimientos m = new Movimientos();
+            m.setCantidad(cantidad);
+            m.setTipoMovimiento(movimiento);
+
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd '|' HH:mm:ss");
+            Date date = new Date(System.currentTimeMillis());
+            m.setFecha(new String(formatter.format(date)) );
+
+
+            Boolean realizado = Cliente.crearMovimiento(m);
+            if(realizado){
+                JOptionPane.showMessageDialog(null, "El movimiento ha sido realizado.");
+            }
+            else {
+                JOptionPane.showMessageDialog(null, "El movimiento no ha sido realizado. Revisa el saldo de la cuenta.");
+            }
         }
+
     }//GEN-LAST:event_b_movimientoActionPerformed
 
     private void n_cantidadStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_n_cantidadStateChanged
         // TODO add your handling code here:
         if(Integer.parseInt(n_cantidad.getValue().toString())> 500){
-            n_cantidad.setValue(500);
+            JOptionPane.showMessageDialog(null, "Cantidad indicada no valida. MAX 500.");
+
         }
 
     }//GEN-LAST:event_n_cantidadStateChanged

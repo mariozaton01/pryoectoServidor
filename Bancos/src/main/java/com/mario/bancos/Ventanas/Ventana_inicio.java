@@ -20,13 +20,19 @@ public class Ventana_inicio extends javax.swing.JFrame {
      */
     public Ventana_inicio() {
         initComponents();
-        Panel_ingresoRetiro p_ingresoRetiro = new Panel_ingresoRetiro();
-        p_ingresoRetiro.setSize(575,585);
-        p_ingresoRetiro.setLocation(0,0);
-        panel.removeAll();
-        panel.add(p_ingresoRetiro,BorderLayout.CENTER);
-        panel.revalidate();
-        panel.repaint();
+
+        try {
+            Panel_ingresoRetiro p_ingresoRetiro = new Panel_ingresoRetiro();
+            p_ingresoRetiro.setSize(575,585);
+            p_ingresoRetiro.setLocation(0,0);
+            panel.removeAll();
+            panel.add(p_ingresoRetiro,BorderLayout.CENTER);
+            panel.revalidate();
+            panel.repaint();
+        }catch (Exception e){
+            System.out.println("PANTALLA: " +(e.getMessage()));
+        }
+
     }
 
     /**
@@ -39,7 +45,8 @@ public class Ventana_inicio extends javax.swing.JFrame {
     private void initComponents() {
 
         panel = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        saldo = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         b_ingresosRetiros = new javax.swing.JMenu();
         b_saldo = new javax.swing.JMenu();
@@ -51,15 +58,23 @@ public class Ventana_inicio extends javax.swing.JFrame {
         panel.setLayout(panelLayout);
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 983, Short.MAX_VALUE)
+            .addGap(0, 575, Short.MAX_VALUE)
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 522, Short.MAX_VALUE)
+            .addGap(0, 588, Short.MAX_VALUE)
         );
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton1.setText("Salir");
+        saldo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        saldo.setText("Saldo");
+        saldo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saldoActionPerformed(evt);
+            }
+        });
+
+        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButton2.setText("Salir");
 
         b_ingresosRetiros.setText("Ingresar/Retirar");
         b_ingresosRetiros.addActionListener(new java.awt.event.ActionListener() {
@@ -94,27 +109,36 @@ public class Ventana_inicio extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51))
+                .addComponent(saldo, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(270, 270, 270)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(274, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addComponent(saldo, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(622, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(16, 16, 16)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_ingresosRetirosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ingresosRetirosActionPerformed
-        // TODO add your handling code here:
         Panel_ingresoRetiro p_ingresoRetiro = new Panel_ingresoRetiro();
         p_ingresoRetiro.setSize(575,585);
         p_ingresoRetiro.setLocation(0,0);
@@ -125,19 +149,32 @@ public class Ventana_inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_b_ingresosRetirosActionPerformed
 
     private void b_saldoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_saldoActionPerformed
-        // TODO add your handling code here:
         Panel_saldo p_saldo = new Panel_saldo();
+
         p_saldo.setSize(575,585);
         p_saldo.setLocation(0,0);
         panel.removeAll();
         panel.add(p_saldo,BorderLayout.CENTER);
         panel.revalidate();
         panel.repaint();
+
     }//GEN-LAST:event_b_saldoActionPerformed
 
     private void b_movimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_movimientosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_b_movimientosActionPerformed
+
+    private void saldoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saldoActionPerformed
+        // TODO add your handling code here:
+        Panel_saldo p_saldo = new Panel_saldo();
+
+        p_saldo.setSize(575,585);
+        p_saldo.setLocation(0,0);
+        panel.removeAll();
+        panel.add(p_saldo,BorderLayout.CENTER);
+        panel.revalidate();
+        panel.repaint();
+    }//GEN-LAST:event_saldoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -178,8 +215,9 @@ public class Ventana_inicio extends javax.swing.JFrame {
     private javax.swing.JMenu b_ingresosRetiros;
     private javax.swing.JMenu b_movimientos;
     private javax.swing.JMenu b_saldo;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel panel;
+    private javax.swing.JButton saldo;
     // End of variables declaration//GEN-END:variables
 }

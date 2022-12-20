@@ -1,6 +1,8 @@
 package com.mario.bancos;
 
 import com.mario.bancos.Clases.DB;
+import com.mario.bancos.Clases.Movimientos;
+import com.mario.bancos.Clases.Saldo;
 import com.mario.bancos.Clases.Usuario;
 import com.mario.bancos.FirmasDigitales.FirmaServer;
 
@@ -12,6 +14,7 @@ import java.security.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 
 public class Hilo extends Thread {
 
@@ -97,44 +100,163 @@ public class Hilo extends Thread {
         //pantallaPrincipal(output, input);
 
         //escuchamos
-        Object obj = recibirObjeto(input);
-        System.out.println("SERVER:" + obj.getClass());
+        while(true){
+            Object obj = recibirObjeto(input);
+            System.out.println("SERVER:" + obj.getClass());
+
+            if (obj instanceof Usuario){
+                Usuario u = (Usuario) obj;
+                String metodo = u.getMetodo();
+
+                switch (metodo){
+                    case "registroUsuario":
+                        try{
+                            if (u.getFirmaDigital().equals("acepto"))
+                                FirmaServer.firmarServidor(output);
+                            registroCliente(u);
+                        }
+                        catch (Exception e){
+                            System.out.println("Ha ocurrido un error al insertar el cliente: " + e.getMessage());
+                        }
+
+                        break;
+                    case "loginUsuario":
+                        try{
+                            Boolean entra = false;
+                                entra =loginCliente(u);
+                            if (!entra){ continue;}
+                            Boolean cerrarSesion = false;
+                            while (!cerrarSesion && entra){
+                                //escucho peticion para ver saldo o ingresos/retiros
+                                Object mov = recibirObjeto(input);
+                                if(mov instanceof Movimientos){
+
+                                    Movimientos m = (Movimientos) mov;
+                                    //creamos el movimiento
+                                    crearMovimiento(m);
+
+                                }
+                                else if(mov instanceof Saldo){
+                                    Saldo s = (Saldo) mov;
+                                    recogerSaldo(s);
 
 
-        if (obj instanceof Usuario){
-            Usuario u = (Usuario) obj;
-            String metodo = u.getMetodo();
+                                }
 
-            switch (metodo){
-                case "registroUsuario":
-                    try{
-                        if (u.getFirmaDigital().equals("acepto"))
-                            FirmaServer.firmarServidor(output);
-                        registroCliente(u);
-                    }
-                    catch (Exception e){
-                        System.out.println("Ha ocurrido un error al insertar el cliente: " + e.getMessage());
-                    }
+                            }
 
-                    break;
-                case "loginUsuario":
-                    try{
-                        loginCliente(u);
+                        }
+                        catch (Exception e){
+                            System.out.println("Ha ocurrido un error al comprobar las credenciales del cliente: " + e.getMessage());
+                        }
+                }
+        }
+        }
+    }
 
-                        //escucho info de saldo o ingresos/retiros
+    private void recogerSaldo(Saldo s) {
+        //el objeto saldo no lo utilizamos para nada. Lo hemos utilizado solamente para recoger la peticion del usuario hacia el servidor
+        String sql = "SELECT * FROM cuentas where idCliente = '"+usuarioConectado.getId()+"'";
+        try {
+            Connection conexion = DB.conectar();
+            ResultSet result = conexion.createStatement().executeQuery(sql);
+            if (result.next()){
+                String saldo = String.valueOf(result.getInt("saldo"));
 
-                    }
-                    catch (Exception e){
-                        System.out.println("Ha ocurrido un error al comprobar las credenciales del cliente: " + e.getMessage());
-
-                    }
+                enviarMensajeCifrado(saldo);
+                System.out.println("Saldo enviado");
             }
         }
+        catch (Exception e){
+            System.out.println("Error al enviar el saldo");
+        }
+    }
 
+    private void enviarMensajeCifrado(String mensaje) {
+        //Cifrar el mensaje
+        byte[] mensajeCifrado = cifrarMensajeSimetrico(mensaje);
+        //Enviar el mensaje cifrado
+        try {
+            output.writeObject(mensajeCifrado);
+            System.out.println("Enviado el mensaje cifrado al servidor");
+        } catch (Exception e) {
+            System.out.println("Error al enviar el mensaje cifrado al servidor" + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    private byte[] cifrarMensajeSimetrico(String mensaje) {
+        Cipher cifradorSimetrico = null;
+        try {
+            cifradorSimetrico = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cifradorSimetrico.init(Cipher.ENCRYPT_MODE, llavePrivadaServer);
+        } catch (Exception e) {
+            System.out.println("Error al crear el cifrador simétrico" + e.getMessage());
+            throw new RuntimeException(e);
+        }
+        //Ciframos el mensaje en forma de byte
+        byte[] contenidoCifrado;
+        try {
+            contenidoCifrado = cifradorSimetrico.doFinal(mensaje.getBytes());
+            System.out.println("Contenido cifrado");
+        } catch (Exception e) {
+            System.out.println("Error al cifrar el contenido" + e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return contenidoCifrado;
+    }
+
+    private void crearMovimiento(Movimientos m) {
+        m.setIdCliente(usuarioConectado.getId());
+        //get Saldo actual para hace el ingreso/retiro
+        String sql = "SELECT * from cuentas where idCliente = '"+usuarioConectado.getId()+"'";
+        try{
+            Connection conexion = DB.conectar();
+            ResultSet result = conexion.createStatement().executeQuery(sql);
+            Boolean movimientoOk = true;
+            if (result.next()){
+                //Preparacion para insertar movimiento en la bd y asi visualizarlo luego.
+                //Posiblemente no me de tiempo.
+                int saldo = result.getInt("saldo");
+
+                int saldoNuevo = 0;
+                if (m.getTipoMovimiento().equals("ingreso")){
+                    saldoNuevo = saldo + m.getCantidad();
+                }
+                else{
+
+                    saldoNuevo = saldo - m.getCantidad();
+                    if(saldoNuevo < 0){
+                        movimientoOk= false;
+                    }
+                }
+                m.setSaldoAnterior(saldo);
+                if(movimientoOk){
+                    //Nos aseguramos de que en caso de hacer un retiro, la cuenta no se quede a < 0
+                    String update = "UPDATE cuentas set saldo = '"+saldoNuevo+"' where idCliente = '"+usuarioConectado.getId()+"'";
+                    conexion.createStatement().executeUpdate(update);
+
+                    //TODO futura insert de movimientos
+
+                    //Mandamos un mensaje al cliente para que se le indique el resultado de la operacion.
+                    enviarMensaje(output, "movimientoRealizado");
+                }
+                else{
+                    enviarMensaje(output, "movimientoNoRealizado");
+                }
+                conexion.close();
+
+            }
+        }
+        catch (Exception e){
+            System.out.println("Error al recoger datos de la cuenta o al efectuar el movimiento en la cuenta: "+ e.getMessage());
+        }
 
     }
 
-    private void loginCliente(Usuario u) {
+    private Boolean loginCliente(Usuario u) {
+        Boolean entra = false;
+
         String pass = u.getContrasena();
         String user = u.getUsuario();
 
@@ -149,6 +271,7 @@ public class Hilo extends Thread {
                 usuarioConectado.setId(result.getInt("id"));
                 //enviamos que el usuario ha sido encontrado para que desde el Cliente se carguen las nuevas ventanas.
                 enviarMensaje(output,"usuarioEncontrado");
+                entra = true;
 
             }
             else{
@@ -159,6 +282,8 @@ public class Hilo extends Thread {
         catch (Exception e ){
             System.out.println("Error al consultar el usuario que inicia sesion: " + e.getMessage());
         }
+
+        return entra;
 
 
 
